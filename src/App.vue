@@ -1,12 +1,7 @@
 <template lang="pug">
 #app
-  NavBar(msg="testing")
-  #nav
-    router-link(to='/') Home
-    |  |
-    router-link(to='/about') About
+  NavBar
   router-view
-
 </template>
 
 <script>
