@@ -25,7 +25,9 @@
 
     hr
     b-row
-      b-col Please enter query and click SEARCH above, results appear here
+      b-col.text-center.m-5
+        p(v-if="repositories.length == 0") Please enter query and click SEARCH above, results appear here
+        p(v-else) SEARCH results
     b-row
       b-col
         repository(v-for='repo in repositories' :repo="repo")
