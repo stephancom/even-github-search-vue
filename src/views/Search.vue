@@ -28,12 +28,14 @@
       b-col Please enter query and click SEARCH above, results appear here
     b-row
       b-col
-        ol
-          li(v-for='repo in repositories') {{ repo.full_name }}
+        repository(v-for='repo in repositories' :repo="repo")
 
 </template>
 
 <script>
+
+import Repository from "@/components/Repository.vue";
+
 // https://developer.github.com/v3/search/#search-repositories
 const axios = require('axios');
 var httpx = axios.create({
@@ -45,6 +47,9 @@ const searchPath = '/search/repositories';
 
 export default {
   name: "search",
+  components: {
+    Repository
+  },
   data () {
     return {
       repositories: [],
