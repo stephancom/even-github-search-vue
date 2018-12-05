@@ -6,6 +6,7 @@ b-navbar(toggleable='md' type='dark' variant='primary')
   b-collapse#nav_collapse(is-nav='')
     b-navbar-nav
       b-nav-item(to='/') Home
+      b-nav-item(to='/search') Search
       b-nav-item(to='/about') About
 </template>
 
