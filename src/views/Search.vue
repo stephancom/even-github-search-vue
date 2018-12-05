@@ -26,6 +26,11 @@
     hr
     b-row
       b-col Please enter query and click SEARCH above, results appear here
+    b-row
+      b-col
+        ol
+          li(v-for='repo in repositories') {{ repo.full_name }}
+
 </template>
 
 <script>
@@ -37,21 +42,12 @@ var httpx = axios.create({
   headers: { 'Accept': 'application/vnd.github.v3+json' }
 })
 const searchPath = '/search/repositories';
-axios.interceptors.request.use(function (config) {
-    // Do something before request is sent
-    console.log(config);
-    return config;
-  }, function (error) {
-    // Do something with request error
-    console.log('reqerr');
-    console.log(error);
-    return Promise.reject(error);
-  });
 
 export default {
   name: "search",
   data () {
     return {
+      repositories: [],
       form: {
         text: '',
         stars: '',
@@ -80,9 +76,10 @@ export default {
       this.debug = 'starting';
       httpx.get(searchPath, { params: params })
         .then( (response) => {
-          console.log('response');
           this.debug = 'response!';
-          this.debug = response;
+          console.log.response;
+          this.debug = response.data.total_count;
+          this.repositories = response.data.items;
         })
         .catch( (error) => {
           console.log('catch');
