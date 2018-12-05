@@ -29,6 +29,25 @@
 </template>
 
 <script>
+// https://developer.github.com/v3/search/#search-repositories
+const axios = require('axios');
+var httpx = axios.create({
+  baseURL: 'https://api.github.com/',
+  timeout: 4000,
+  headers: { 'Accept': 'application/vnd.github.v3+json' }
+})
+const searchPath = '/search/repositories';
+axios.interceptors.request.use(function (config) {
+    // Do something before request is sent
+    console.log(config);
+    return config;
+  }, function (error) {
+    // Do something with request error
+    console.log('reqerr');
+    console.log(error);
+    return Promise.reject(error);
+  });
+
 export default {
   name: "search",
   data () {
@@ -58,6 +77,19 @@ export default {
       this.debug = '?q=' + q.join('+');
       var params = { q: q.join('+') }
       this.debug = params;
+      this.debug = 'starting';
+      httpx.get(searchPath, { params: params })
+        .then( (response) => {
+          console.log('response');
+          this.debug = 'response!';
+          this.debug = response;
+        })
+        .catch( (error) => {
+          console.log('catch');
+          console.log(error);
+          this.debug = 'error :(';
+          this.debug = error;
+        })
       // TODO
     },
     onReset (evt) {
