@@ -4,39 +4,45 @@
       b-col
         h1.heading Even Financial GitHub Repository Search
     b-row
-      h3.debug {{ debug }}
-    b-row
       b-col
-        b-form(@submit="onSubmit" @reset="onReset")
+        b-form(@submit="onSubmit")
           b-row
             b-form-group.col(label='Text' label-for='text')
-              b-form-input(id='text' type='text' v-model='form.text' placeholder='react')
+              b-form-input(id='text' type='text' v-model='form.text' placeholder='react' :disabled='searching')
             b-form-group.col(label='Stars' label-for='stars')
               //- ^\s*(<|>|>=|<=)?(\*?|\d*)(\.{2,3}(\*?|\d+))?\s*$
-              b-form-input(id='stars' type='text' v-model='form.stars' placeholder='>100' pattern='\s*(<|>|>=|<=)?(\*?|\d*)(\.{2,3}(\*?|\d+))?\s*')
+              //- b-form-input(id='stars' type='text' v-model='form.stars' placeholder='>100' pattern='\s*(<|>|>=|<=)?(\*?|\d*)(\.{2,3}(\*?|\d+))?\s*' :disabled='searching')
+              b-form-input(id='stars' type='text' v-model='form.stars' placeholder='>100' :disabled='searching')
           b-row
             b-form-group.col(label='License' label-for='license')
-              b-form-select(id='license' :options='licenses' v-model='form.license')
+              b-form-select(id='license' :options='licenses' v-model='form.license' :disabled='searching')
             b-form-group.col
-              b-form-checkbox(id='fork' v-model='form.fork') Include Fork
+              b-form-checkbox(id='fork' v-model='form.fork' :disabled='searching') Include Fork
           b-row
             b-col.footer
-              b-button(type='submit' variant='primary') Search
+              b-button(type='submit' variant='primary' :disabled='searching') Search
 
     hr
     b-row
       b-col.text-center.m-5
-        p(v-if="repositories.length == 0") Please enter query and click SEARCH above, results appear here
-        p(v-else) SEARCH results
+        img(v-if="this.searching" src="../assets/SpinnyBalls.gif")
+        p(v-else)
+          errors(v-if="error" :data="error_response")
+          span(v-else-if="repositories == null") Please enter query and click SEARCH above, results appear here
+          span(v-else-if="repositories.length == 0") No results
+          span(v-else) SEARCH results
     b-row
       b-col
         repository(v-for='repo in repositories' :repo="repo")
+    b-row
+      h3.debug {{ debug }}
 
 </template>
 
 <script>
 
 import Repository from "@/components/Repository.vue";
+import Errors from "@/components/Errors.vue";
 
 // https://developer.github.com/v3/search/#search-repositories
 const axios = require('axios');
@@ -47,14 +53,27 @@ var httpx = axios.create({
 })
 const searchPath = '/search/repositories';
 
+httpx.interceptors.request.use(function (config) {
+    // Do something before request is sent
+    console.log("intercept before")
+    console.log(config)
+    return config;
+  }, function (error) {
+    // Do something with request error
+    console.log("intercept error")
+    console.log(error);
+    return Promise.reject(error);
+  });
+
 export default {
   name: "search",
   components: {
-    Repository
+    Repository,
+    Errors
   },
   data () {
     return {
-      repositories: [],
+      repositories: null,
       form: {
         text: '',
         stars: '',
@@ -62,42 +81,51 @@ export default {
         fork: []
       },
       licenses: ['', 'MIT', 'ISC', 'Apache', 'GPL'],
+      searching: false,
+      error: false,
+      error_response: null,
       debug: 'starting'
     }
   },
   methods: {
+    paramOK(key) {
+      return this.form[key] && /\S/.test(this.form[key]);
+    },
+    paramEncode(key) {
+      return encodeURIComponent(this.form[key].trim());
+    },
     onSubmit (evt) {
       this.debug = 'onSubmit';
-
+      this.repositories = [];
+      this.searching = true;
+      this.error = false;
+      this.error_response = null;
       var q = [];
-      for(var key in this.form) {
-        if(this.form[key] && /\S/.test(this.form[key])) {
-          var param = encodeURIComponent(this.form[key].trim());
-          if(key != 'text') { param = key + ':' + param }
-          q.push(param)
-        }
-      }
-      this.debug = '?q=' + q.join('+');
-      var params = { q: q.join('+') }
-      this.debug = params;
-      this.debug = 'starting';
-      httpx.get(searchPath, { params: params })
+      if(this.paramOK('text')) { q.push(this.paramEncode('text')) }
+      if(this.paramOK('stars')) { q.push('stars:' + this.paramEncode('stars')) }
+      if(this.paramOK('license')) { q.push('license:' + this.paramEncode('license')) }
+      if(this.paramOK('form')) { q.push('fork:true') }
+
+      httpx.get(searchPath, { params: { q: q.join('+') } })
         .then( (response) => {
-          this.debug = 'response!';
-          console.log.response;
-          this.debug = response.data.total_count;
           this.repositories = response.data.items;
         })
         .catch( (error) => {
+          this.repositories = null;
+          this.searching = false;
+          this.error = true;
+          this.error_response = error['response']['data'];
           console.log('catch');
           console.log(error);
+          console.log(error.response);
+          console.log(error['response']);
+          console.log(error['response']['data']);
           this.debug = 'error :(';
-          this.debug = error;
+          this.debug = error.response.data;
         })
-      // TODO
-    },
-    onReset (evt) {
-      // TODO
+        .then( () => {
+          this.searching = false;
+        })
     }
   }
 };

@@ -14,7 +14,7 @@
           p Stars:
       b-row
         b-col
-          em
+          b
             a(href="repo.stargazers_url") {{ repo.stargazers_count }}
     b-col.col-md-2.border.p-2.text-center
       b-row
@@ -22,8 +22,9 @@
           p License:
       b-row
         b-col
-          em
-            a(href="repo.license.url") {{ repo.license.name }}
+          b
+            a(v-if="repo.license" href="repo.license.url") {{ repo.license.name }}
+            span(v-else) NONE
 </template>
 
 <script>
