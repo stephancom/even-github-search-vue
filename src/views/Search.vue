@@ -10,7 +10,8 @@
             b-form-group.col(label='Text' label-for='text')
               b-form-input(id='text' type='text' v-model='form.q' placeholder='react')
             b-form-group.col(label='Stars' label-for='stars')
-              b-form-input(id='stars' type='text' v-model='form.stars' placeholder='>100')
+              //- ^\s*(<|>|>=|<=)?(\*?|\d*)(\.{2,3}(\*?|\d+))?\s*$
+              b-form-input(id='stars' type='text' v-model='form.stars' placeholder='>100' pattern='\s*(<|>|>=|<=)?(\*?|\d*)(\.{2,3}(\*?|\d+))?\s*')
           b-row
             b-form-group.col(label='License' label-for='license')
               b-form-select(id='license' :options='licenses' v-model='form.license')
