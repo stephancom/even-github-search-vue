@@ -7,17 +7,15 @@
       b-col
         b-form(@submit="onSubmit")
           b-row
-            b-form-group.col(label='Text' label-for='topic')
-              b-form-input(id='topic' type='text' v-model='form.topic' placeholder='topic' :disabled='searching')
-            b-form-group.col(label='Stars' label-for='stars')
-              //- ^\s*(<|>|>=|<=)?(\*?|\d*)(\.{2,3}(\*?|\d+))?\s*$
-              //- b-form-input(id='stars' type='text' v-model='form.stars' placeholder='>100' pattern='\s*(<|>|>=|<=)?(\*?|\d*)(\.{2,3}(\*?|\d+))?\s*' :disabled='searching')
-              b-form-input(id='stars' type='text' v-model='form.stars' placeholder='stars' :disabled='searching')
+            b-form-group.col(label='Text' label-for='topic' invalid-feedback='Cannot be blank')
+              b-form-input(id='topic' type='text' v-model='form.topic' placeholder='topic' validated=true v-bind:class="{ 'is-invalid': !topicValid }"  :disabled='searching' @blur="isValid")
+            b-form-group.col(label='Stars' label-for='stars' invalid-feedback='examples: 100, >50, <=200, 100..5000')
+              b-form-input(id='stars' type='text' v-model='form.stars' placeholder='stars' validated=true v-bind:class="{ 'is-invalid': !starsValid }"  :disabled='searching' @blur="isValid")
           b-row
             b-form-group.col(label='License' label-for='license')
-              b-form-select(id='license' :options='licenses' v-model='form.license' :disabled='searching')
+              b-form-select(id='license' v-model='form.license'  :options='licenses'  :disabled='searching')
             b-form-group.col.pt-4(size='lg')
-              b-form-checkbox(id='fork' v-model='form.fork' :disabled='searching') Include Forked
+              b-form-checkbox(id='fork' v-model='form.fork'  :disabled='searching') Include Forked
           b-row
             b-col.footer
               b-button(type='submit' variant='primary' :disabled='searching') Search
@@ -27,15 +25,13 @@
       b-col.text-center.m-5
         img(v-if="this.searching" src="../assets/SpinnyBalls.gif")
         p(v-else)
-          errors(v-if="error" :data="error_response")
+          errors(v-if="error_response" :data="error_response")
           span(v-else-if="repositories == null") Please enter query and click SEARCH above, results appear here
           span(v-else-if="repositories.length == 0") No results
           span(v-else) SEARCH results
     b-row
       b-col
         repository(v-for='repo in repositories' :repo="repo")
-    b-row
-      h3.debug {{ debug }}
 
 </template>
 
@@ -55,6 +51,7 @@ var httpx = axios.create({
   }
 })
 const searchPath = '/search/repositories';
+const starsRegexp = /^\s*(<|>|>=|<=)?(\*?|\d*)(\.{2,3}(\*?|\d+))?\s*$/;
 
 export default {
   name: "search",
@@ -73,9 +70,9 @@ export default {
       },
       licenses: ['', 'MIT', 'ISC', 'Apache', 'GPL'],
       searching: false,
-      error: false,
       error_response: null,
-      debug: 'starting'
+      topicValid: true,
+      starsValid: true
     }
   },
   methods: {
@@ -85,11 +82,18 @@ export default {
     paramEncode(key) {
       return encodeURIComponent(this.form[key].trim());
     },
+    isValid() {
+      this.starsValid = this.form.stars == null || this.form.stars.length < 1 || starsRegexp.test(this.form.stars);
+      // topic can be blank if license is filled in or stars is valid
+      this.topicValid = this.starsValue || this.form.license != null || 
+                       (this.form.topic != null && this.form.topic.length > 0);
+
+      return this.topicValid && this.starsValid;
+    },
     onSubmit (evt) {
-      this.debug = 'onSubmit';
+      if(!this.isValid()) { return; }
       this.repositories = [];
       this.searching = true;
-      this.error = false;
       this.error_response = null;
       var q = [];
       if(this.paramOK('topic')) { q.push(this.paramEncode('topic')) }
@@ -106,16 +110,7 @@ export default {
         })
         .catch( (error) => {
           this.repositories = null;
-          this.searching = false;
-          this.error = true;
           this.error_response = error['response']['data'];
-          console.log('catch');
-          console.log(error);
-          console.log(error.response);
-          console.log(error['response']);
-          console.log(error['response']['data']);
-          this.debug = 'error :(';
-          this.debug = error.response.data;
         })
         .then( () => {
           this.searching = false;
