@@ -22,10 +22,10 @@
 </template>
 
 <script>
-  export default {
-    name: 'repository',
-    props: [ 'repo' ]
-  }
+export default {
+  name: "repository",
+  props: ["repo"]
+};
 </script>
 
 <style lang="sass" scoped>

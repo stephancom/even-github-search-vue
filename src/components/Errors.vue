@@ -5,8 +5,8 @@
 </template>
 
 <script>
-  export default {
-    name: 'errors',
-    props: [ 'data' ]
-  }
+export default {
+  name: "errors",
+  props: ["data"]
+};
 </script>

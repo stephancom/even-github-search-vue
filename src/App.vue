@@ -6,7 +6,6 @@
 </template>
 
 <script>
-
 import NavBar from "@/components/NavBar.vue";
 
 export default {
@@ -23,9 +22,9 @@ export default {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  $even: #377CBE;
+  $even: #377cbe;
   .bg-primary {
-    background-color: $even!important; 
+    background-color: $even !important;
   }
   .btn-primary {
     background-color: $even;
