@@ -9,7 +9,13 @@ export default new Router({
     {
       path: "/",
       name: "search",
-      component: Search
+      component: Search,
+      props: (route) => ({
+        topic: route.query.topic,
+        stars: route.query.stars,
+        license: route.query.license,
+        fork: route.query.fork
+      })
     }
   ]
 });

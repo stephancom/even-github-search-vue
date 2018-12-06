@@ -59,6 +59,7 @@ export default {
     Repository,
     Errors
   },
+  props: [ 'topic', 'stars', 'license', 'fork'],
   data () {
     return {
       repositories: null,
@@ -75,6 +76,23 @@ export default {
       starsValid: true
     }
   },
+  mounted: function() {
+    this.form.topic = this.topic;
+    this.form.stars = this.stars;
+    this.form.license = this.license;
+    this.form.fork = this.fork;
+    if (this.isValid()) {    
+      this.doSearch();
+    } else {
+      this.clearValid();
+    }
+  },
+  watch:{
+    topic (topic) { this.form.topic = topic; this.doSearch(); },
+    stars (stars) { this.form.stars = stars; this.doSearch(); },
+    license (license) { this.form.license = license; this.doSearch(); },
+    fork (fork) { this.form.form = fork; this.doSearch(); }
+  }, 
   methods: {
     paramOK(key) {
       return this.form[key] && /\S/.test(this.form[key]);
@@ -84,22 +102,42 @@ export default {
     },
     isValid() {
       this.starsValid = this.form.stars == null || this.form.stars.length < 1 || starsRegexp.test(this.form.stars);
-      // topic can be blank if license is filled in or stars is valid
-      this.topicValid = this.starsValue || this.form.license != null || 
+      // topic can be blank if license or stars are filled in
+      this.topicValid = this.form.stars != null || this.form.license != null || 
                        (this.form.topic != null && this.form.topic.length > 0);
 
       return this.topicValid && this.starsValid;
     },
-    onSubmit (evt) {
+    clearValid() {
+      this.starsValid = true;
+      this.topicValid = true;
+    },
+    urlParams() {
+      var params = {};
+      if(this.paramOK('topic')) { params['topic'] = this.form.topic; }
+      if(this.paramOK('stars')) { params['stars'] = this.form.stars; }
+      if(this.paramOK('license')) { params['license'] = this.form.license; }
+      if(this.paramOK('fork')) { params['fork'] = true; }
+      return params;
+    },
+    queryParams() {
+      var q = [];
+      if(this.paramOK('topic')) { q.push(this.paramEncode('topic')); }
+      if(this.paramOK('stars')) { q.push('stars:' + this.paramEncode('stars')); }
+      if(this.paramOK('license')) { q.push('license:' + this.paramEncode('license')); }
+      if(this.paramOK('fork')) { q.push('fork:true'); }
+      return q;
+    },
+    onSubmit(evt) {
+      this.isValid();
+      this.$router.push({ name: 'search', query: this.urlParams() })        
+    },
+    doSearch() {
       if(!this.isValid()) { return; }
+      var q = this.queryParams();
       this.repositories = [];
       this.searching = true;
       this.error_response = null;
-      var q = [];
-      if(this.paramOK('topic')) { q.push(this.paramEncode('topic')) }
-      if(this.paramOK('stars')) { q.push('stars:' + this.paramEncode('stars')) }
-      if(this.paramOK('license')) { q.push('license:' + this.paramEncode('license')) }
-      if(this.paramOK('fork')) { q.push('fork:true') }
 
       // RIGHT (but GitHub expects something weird)
       // httpx.get(searchPath, { params: { q: q.join('+') } })
