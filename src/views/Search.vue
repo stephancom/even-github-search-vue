@@ -16,8 +16,8 @@
           b-row
             b-form-group.col(label='License' label-for='license')
               b-form-select(id='license' :options='licenses' v-model='form.license' :disabled='searching')
-            b-form-group.col
-              b-form-checkbox(id='fork' v-model='form.fork' :disabled='searching') Include Fork
+            b-form-group.col.pt-4(size='lg')
+              b-form-checkbox(id='fork' v-model='form.fork' :disabled='searching') Include Forked
           b-row
             b-col.footer
               b-button(type='submit' variant='primary' :disabled='searching') Search
