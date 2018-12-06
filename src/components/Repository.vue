@@ -4,7 +4,7 @@
       b-row.pt-3
         b-col
           b-button.float-right(v-if='repo.fork' size='sm' variant='primary') Forked
-          a(:href="repo.url") {{ repo.full_name }}
+          a(:href="repo.html_url" target='_blank') {{ repo.full_name }}
       b-row.pt-3
         b-col
           p {{ repo.description }}
