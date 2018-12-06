@@ -5,53 +5,53 @@ exports[`Repository.vue forked repo matches snapshot 1`] = `
   <b-col-stub class="col-md-8 col-12 border p-3">
     <b-row-stub class="pt-3">
       <b-col-stub>
-        <b-button-stub size="sm" variant="primary" class="float-right">Forked</b-button-stub><a href="http://github.com/some_dev/this-repo" target="_blank">boring-coder/some-old-repo</a>
+        <b-button-stub size="sm" variant="primary" class="float-right">Forked</b-button-stub><a href="http://github.com/some_dev/this-repo" target="_blank">default-coder/default-repo</a>
       </b-col-stub>
     </b-row-stub>
     <b-row-stub class="pt-3">
       <b-col-stub>
-        <p>compute all the things</p>
+        <p>default description</p>
       </b-col-stub>
     </b-row-stub>
   </b-col-stub>
   <b-col-stub class="col-md-2 col-12 border py-4 text-center">
     <b-row-stub>
       <b-col-stub class="col-auto col-md-12">Stars:</b-col-stub>
-      <b-col-stub class="col-auto col-md-12 pt-md-2 detail"><span>42</span></b-col-stub>
+      <b-col-stub class="col-auto col-md-12 pt-md-2 detail"><span>0</span></b-col-stub>
     </b-row-stub>
   </b-col-stub>
   <b-col-stub class="col-md-2 col-12 border py-4 text-center">
     <b-row-stub>
       <b-col-stub class="col-auto col-md-12">License:</b-col-stub>
-      <b-col-stub class="col-auto col-md-12 pt-md-2 detail"><span>Arizona Chill License</span></b-col-stub>
+      <b-col-stub class="col-auto col-md-12 pt-md-2 detail"><span>default</span></b-col-stub>
     </b-row-stub>
   </b-col-stub>
 </b-row-stub>
 `;
 
-exports[`Repository.vue matches snapshot 1`] = `
+exports[`Repository.vue unforked repo matches snapshot 1`] = `
 <b-row-stub class="mb-4 px-4 px-md-0">
   <b-col-stub class="col-md-8 col-12 border p-3">
     <b-row-stub class="pt-3">
       <b-col-stub>
-        <!----><a href="http://github.com/some_dev/this-repo" target="_blank">boring-coder/some-old-repo</a></b-col-stub>
+        <!----><a href="http://github.com/some_dev/this-repo" target="_blank">default-coder/default-repo</a></b-col-stub>
     </b-row-stub>
     <b-row-stub class="pt-3">
       <b-col-stub>
-        <p>compute all the things</p>
+        <p>default description</p>
       </b-col-stub>
     </b-row-stub>
   </b-col-stub>
   <b-col-stub class="col-md-2 col-12 border py-4 text-center">
     <b-row-stub>
       <b-col-stub class="col-auto col-md-12">Stars:</b-col-stub>
-      <b-col-stub class="col-auto col-md-12 pt-md-2 detail"><span>42</span></b-col-stub>
+      <b-col-stub class="col-auto col-md-12 pt-md-2 detail"><span>0</span></b-col-stub>
     </b-row-stub>
   </b-col-stub>
   <b-col-stub class="col-md-2 col-12 border py-4 text-center">
     <b-row-stub>
       <b-col-stub class="col-auto col-md-12">License:</b-col-stub>
-      <b-col-stub class="col-auto col-md-12 pt-md-2 detail"><span>Arizona Chill License</span></b-col-stub>
+      <b-col-stub class="col-auto col-md-12 pt-md-2 detail"><span>default</span></b-col-stub>
     </b-row-stub>
   </b-col-stub>
 </b-row-stub>

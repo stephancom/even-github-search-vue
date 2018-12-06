@@ -1,61 +1,65 @@
 import { shallowMount } from "@vue/test-utils";
 import Repository from "@/components/Repository.vue";
 
+const defaultRepoProps = {
+  full_name: "default-coder/default-repo",
+  html_url: "http://github.com/some_dev/this-repo",
+  description: "default description",
+  stargazers_count: 0,
+  license: {
+    name: "default",
+  },
+  fork: false
+};
+
+const repoFactory = (repoProps) => {
+  const mergedRepoProps = {...defaultRepoProps, ...repoProps};
+  return shallowMount(Repository, { propsData: { repo: mergedRepoProps }});
+}
+
 describe("Repository.vue", () => {
-  const repo = {
-    full_name: "boring-coder/some-old-repo",
-    html_url: "http://github.com/some_dev/this-repo", // which really should match full_name
-    description: "compute all the things",
-    stargazers_count: "42",
-    license: {
-      name: "Arizona Chill License",
-    },
-    fork: false
-  };
-  const wrapper = shallowMount(Repository, { propsData: { repo: repo }});
   it("renders repo.full_name when passed", () => {
-    expect(wrapper.text()).toMatch("boring-coder/some-old-repo");
+    expect(repoFactory({full_name: 'swedish-chef/bork-bork-bork'}).text()).toMatch("swedish-chef/bork-bork-bork");
   });
   it("renders the html url", () => {
-    expect(wrapper.contains('a[href="http://github.com/some_dev/this-repo"]')).toBe(true);
+    expect(repoFactory({html_url: "http://github.com/some_dev/this-repo"}).contains('a[href="http://github.com/some_dev/this-repo"]')).toBe(true);
   });
   it("renders the description", () => {
-    expect(wrapper.text()).toMatch("compute all the things");
+    expect(repoFactory({description: "compute all the things"}).text()).toMatch("compute all the things");
   });
   it("renders the number of stars", () => {
-    expect(wrapper.text()).toMatch("42");
+    expect(repoFactory({stargazers_count: 42}).text()).toMatch("42");
   });
   it("renders the license name", () => {
-    expect(wrapper.text()).toMatch("Arizona Chill License");
+    expect(repoFactory({license: {name: "Arizona Chill License"}}).text()).toMatch("Arizona Chill License");
   });
-  it("does NOT contain a fork button", () => {
-    expect(wrapper.text()).not.toMatch("Forked");
-  });
-  it("has no buttons", () => {
-    expect(wrapper.contains("b-button-stub")).toBe(false);
-  });
-  it("matches snapshot", () => {
-    expect(wrapper.html()).toMatchSnapshot();
-  })
 
-  describe("forked repo", () => {
-    var forkedRepo = repo;
-    var forkedWrapper;
-    beforeAll(() => {
-      forkedRepo.fork = true
-      forkedWrapper = shallowMount(Repository, { propsData: { repo: forkedRepo }});
+  describe("unforked repo", () => {
+    const unforkedRepo = repoFactory({fork: false});
+    it("does NOT contain a fork button", () => {
+      expect(unforkedRepo.text()).not.toMatch("Forked");
     });
-    it("contains forked text", () => {
-      expect(forkedWrapper.text()).toMatch("Forked");
-    });
-    it("contains a button", () => {
-      expect(forkedWrapper.contains("b-button-stub")).toBe(true);
-    });
-    it("contains a forked button", () => {
-      expect(forkedWrapper.find("b-button-stub").text()).toMatch("Forked");
+    it("has no buttons", () => {
+      expect(unforkedRepo.contains("b-button-stub")).toBe(false);
     });
     it("matches snapshot", () => {
-      expect(forkedWrapper.html()).toMatchSnapshot();
+      expect(unforkedRepo.html()).toMatchSnapshot();
+    })
+  });
+
+  describe("forked repo", () => {
+    var forkedRepo = repoFactory({fork: true});
+    it("contains forked text", () => {
+      expect(forkedRepo.text()).toMatch("Forked");
+    });
+    it("contains a button", () => {
+      expect(forkedRepo.contains("b-button-stub")).toBe(true);
+    });
+    it("contains a forked button", () => {
+      expect(forkedRepo.find("b-button-stub").text()).toMatch("Forked");
+    });
+    it("matches snapshot", () => {
+      expect(forkedRepo.html()).toMatchSnapshot();
     })
   })
 })
