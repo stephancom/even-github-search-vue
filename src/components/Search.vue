@@ -37,8 +37,7 @@ import Repository from "@/components/Repository.vue";
 import Errors from "@/components/Errors.vue";
 
 // https://developer.github.com/v3/search/#search-repositories
-const axios = require("axios");
-var httpx = axios.create({
+const axios = require("axios").create({
   baseURL: "https://api.github.com/",
   timeout: 4000,
   headers: {
@@ -134,9 +133,9 @@ export default {
       this.error_response = null;
 
       // RIGHT (but GitHub expects something weird)
-      // httpx.get(searchPath, { params: { q: q.join('+') } })
+      // axios.get(searchPath, { params: { q: q.join('+') } })
       // WRONG (but it works)
-      httpx
+      axios
         .get(searchPath + "?q=" + q.join("+"))
         .then(response => {
           this.repositories = response.data.items;
