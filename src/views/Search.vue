@@ -63,7 +63,7 @@ export default {
     return {
       repositories: null,
       form: {
-        text: '',
+        topic: '',
         stars: '',
         license: null,
         fork: []
