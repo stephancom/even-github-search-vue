@@ -8,9 +8,9 @@
         b-form(@submit="onSubmit")
           b-row
             b-form-group.col-md.px-md-4.px-2(label='Text' label-for='topic' invalid-feedback='Cannot be blank')
-              b-form-input(id='topic' type='text' v-model='form.topic' placeholder='topic' validated=true v-bind:class="{ 'is-invalid': !topicValid }"  :disabled='searching' @blur="isValid")
+              b-form-input(id='topic' type='text' v-model='form.topic' placeholder='topic' validated=true v-bind:class="{ 'is-invalid': !topicValid }"  :disabled='searching')
             b-form-group.col-md.px-md-4.px-2(label='Stars' label-for='stars' invalid-feedback='examples: 100, >50, <=200, 100..5000')
-              b-form-input(id='stars' type='text' v-model='form.stars' placeholder='stars' validated=true v-bind:class="{ 'is-invalid': !starsValid }"  :disabled='searching' @blur="isValid")
+              b-form-input(id='stars' type='text' v-model='form.stars' placeholder='stars' validated=true v-bind:class="{ 'is-invalid': !starsValid }"  :disabled='searching')
           b-row
             b-form-group.col-md.px-md-4.px-2(label='License' label-for='license')
               b-form-select(id='license' v-model='form.license'  :options='licenses'  :disabled='searching')
