@@ -1,5 +1,5 @@
 import { shallowMount } from "@vue/test-utils";
-const flushPromises = require('flush-promises');
+import flushPromises from "flush-promises";
 
 import Search from "@/components/Search.vue";
 
