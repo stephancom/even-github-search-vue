@@ -12,12 +12,12 @@
       b-row
         b-col.col-auto.col-md-12 Stars:
         b-col.col-auto.col-md-12.pt-md-2.detail
-          a(href="repo.stargazers_url") {{ repo.stargazers_count }}
+          span {{ repo.stargazers_count }}
     b-col.col-md-2.col-12.border.py-4.text-center
       b-row
         b-col.col-auto.col-md-12 License:
         b-col.col-auto.col-md-12.pt-md-2.detail
-          a(v-if="repo.license" href="repo.license.url") {{ repo.license.name }}
+          span(v-if="repo.license") {{ repo.license.name }}
           span(v-else) NONE
 </template>
 
