@@ -7,12 +7,12 @@
       b-col
         b-form(@submit="onSubmit")
           b-row
-            b-form-group.col(label='Text' label-for='text')
-              b-form-input(id='text' type='text' v-model='form.text' placeholder='react' :disabled='searching')
+            b-form-group.col(label='Text' label-for='topic')
+              b-form-input(id='topic' type='text' v-model='form.topic' placeholder='topic' :disabled='searching')
             b-form-group.col(label='Stars' label-for='stars')
               //- ^\s*(<|>|>=|<=)?(\*?|\d*)(\.{2,3}(\*?|\d+))?\s*$
               //- b-form-input(id='stars' type='text' v-model='form.stars' placeholder='>100' pattern='\s*(<|>|>=|<=)?(\*?|\d*)(\.{2,3}(\*?|\d+))?\s*' :disabled='searching')
-              b-form-input(id='stars' type='text' v-model='form.stars' placeholder='>100' :disabled='searching')
+              b-form-input(id='stars' type='text' v-model='form.stars' placeholder='stars' :disabled='searching')
           b-row
             b-form-group.col(label='License' label-for='license')
               b-form-select(id='license' :options='licenses' v-model='form.license' :disabled='searching')
@@ -49,7 +49,17 @@ const axios = require('axios');
 var httpx = axios.create({
   baseURL: 'https://api.github.com/',
   timeout: 4000,
-  headers: { 'Accept': 'application/vnd.github.v3+json' }
+  headers: { 
+    'User-Agent': 'stephancom-even-github-search-vue',
+    'Accept': 'application/vnd.github.v3+json'
+  }
+  // ,
+  // paramsSerializer: (params) => {
+  //   console.log('serialize', params);
+  //   // var result = '';
+  //   // return result;
+  //   return Qs.stringify(params, {arrayFormat: 'brackets'}, {encode: false})
+  // }
 })
 const searchPath = '/search/repositories';
 
@@ -92,6 +102,7 @@ export default {
       return this.form[key] && /\S/.test(this.form[key]);
     },
     paramEncode(key) {
+      // return encodeURIComponent(this.form[key].trim());
       return encodeURIComponent(this.form[key].trim());
     },
     onSubmit (evt) {
@@ -101,12 +112,27 @@ export default {
       this.error = false;
       this.error_response = null;
       var q = [];
-      if(this.paramOK('text')) { q.push(this.paramEncode('text')) }
+      // for(var key in this.form) {
+      //   if(this.paramOK(key)) {
+      //     q.push(key + ':"' + this.paramEncode(key) + '"')
+      //   }
+      //   console.log(q);
+      // }
+      if(this.paramOK('topic')) { q.push(this.paramEncode('topic')) }
       if(this.paramOK('stars')) { q.push('stars:' + this.paramEncode('stars')) }
       if(this.paramOK('license')) { q.push('license:' + this.paramEncode('license')) }
       if(this.paramOK('form')) { q.push('fork:true') }
+      // if(this.paramOK('topic')) { q.push(this.form.topic.trim()) }
+      // if(this.paramOK('stars')) { q.push('stars:"' + this.form.stars + '"') }
+      // if(this.paramOK('license')) { q.push('license:' + this.form.license) }
+      // if(this.paramOK('form')) { q.push('fork:true') }
 
-      httpx.get(searchPath, { params: { q: q.join('+') } })
+      console.log({ params: { q: q.join('+') } })
+
+      // RIGHT (but GitHub expects something weird)
+      // httpx.get(searchPath, { params: { q: q.join('+') } })
+      // WRONG (but it works)
+      httpx.get(searchPath + '?q=' + q.join('+'))
         .then( (response) => {
           this.repositories = response.data.items;
         })
