@@ -1,6 +1,6 @@
 <template lang="pug">
 b-navbar(toggleable='md' type='dark' variant='primary')
-  b-navbar-brand(href='#')
+  a.b-navbar-brand(href='/')
     img.d-inline-block(alt="Vue logo" src="../assets/logo.png" height="20")
 </template>
 
