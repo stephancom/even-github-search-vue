@@ -34,6 +34,9 @@ describe("Repository.vue", () => {
   it("has no buttons", () => {
     expect(wrapper.contains("b-button-stub")).toBe(false);
   });
+  it("matches snapshot", () => {
+    expect(wrapper.html()).toMatchSnapshot();
+  })
 
   describe("forked repo", () => {
     var forkedRepo = repo;
@@ -51,5 +54,8 @@ describe("Repository.vue", () => {
     it("contains a forked button", () => {
       expect(forkedWrapper.find("b-button-stub").text()).toMatch("Forked");
     });
+    it("matches snapshot", () => {
+      expect(forkedWrapper.html()).toMatchSnapshot();
+    })
   })
 })
