@@ -53,27 +53,8 @@ var httpx = axios.create({
     'User-Agent': 'stephancom-even-github-search-vue',
     'Accept': 'application/vnd.github.v3+json'
   }
-  // ,
-  // paramsSerializer: (params) => {
-  //   console.log('serialize', params);
-  //   // var result = '';
-  //   // return result;
-  //   return Qs.stringify(params, {arrayFormat: 'brackets'}, {encode: false})
-  // }
 })
 const searchPath = '/search/repositories';
-
-httpx.interceptors.request.use(function (config) {
-    // Do something before request is sent
-    console.log("intercept before")
-    console.log(config)
-    return config;
-  }, function (error) {
-    // Do something with request error
-    console.log("intercept error")
-    console.log(error);
-    return Promise.reject(error);
-  });
 
 export default {
   name: "search",
@@ -102,7 +83,6 @@ export default {
       return this.form[key] && /\S/.test(this.form[key]);
     },
     paramEncode(key) {
-      // return encodeURIComponent(this.form[key].trim());
       return encodeURIComponent(this.form[key].trim());
     },
     onSubmit (evt) {
@@ -112,22 +92,10 @@ export default {
       this.error = false;
       this.error_response = null;
       var q = [];
-      // for(var key in this.form) {
-      //   if(this.paramOK(key)) {
-      //     q.push(key + ':"' + this.paramEncode(key) + '"')
-      //   }
-      //   console.log(q);
-      // }
       if(this.paramOK('topic')) { q.push(this.paramEncode('topic')) }
       if(this.paramOK('stars')) { q.push('stars:' + this.paramEncode('stars')) }
       if(this.paramOK('license')) { q.push('license:' + this.paramEncode('license')) }
-      if(this.paramOK('form')) { q.push('fork:true') }
-      // if(this.paramOK('topic')) { q.push(this.form.topic.trim()) }
-      // if(this.paramOK('stars')) { q.push('stars:"' + this.form.stars + '"') }
-      // if(this.paramOK('license')) { q.push('license:' + this.form.license) }
-      // if(this.paramOK('form')) { q.push('fork:true') }
-
-      console.log({ params: { q: q.join('+') } })
+      if(this.paramOK('fork')) { q.push('fork:true') }
 
       // RIGHT (but GitHub expects something weird)
       // httpx.get(searchPath, { params: { q: q.join('+') } })
