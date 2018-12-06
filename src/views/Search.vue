@@ -77,6 +77,7 @@ export default {
     }
   },
   mounted: function() {
+    this.results = [];
     this.form.topic = this.topic;
     this.form.stars = this.stars;
     this.form.license = this.license;
