@@ -14,7 +14,7 @@ b-container
           b-form-group.pt-4.col-md.px-md-4.px-2(size='lg')
             b-form-checkbox(id='fork' v-model='form.fork'  :disabled='searching') Include Forked
         b-row
-          b-col.footer
+          b-col.footer.text-center
             b-button(type='submit' variant='primary' :disabled='searching') Search
 
   hr
