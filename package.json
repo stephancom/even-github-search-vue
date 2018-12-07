@@ -12,6 +12,7 @@
   "dependencies": {
     "bootstrap-vue": "^2.0.0-rc.11",
     "flush-promises": "^1.0.2",
+    "jest-mock-axios": "^2.1.11",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1"
   },

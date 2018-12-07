@@ -2,7 +2,7 @@
 b-container
   b-row
     b-col
-      b-form(@submit="onSubmit")
+      b-form(@submit.prevent="onSubmit")
         b-row
           b-form-group.col-md.px-md-4.px-2(label='Text' label-for='topic' invalid-feedback='Cannot be blank')
             b-form-input(id='topic' type='text' v-model='form.topic' placeholder='topic' validated=true v-bind:class="{ 'is-invalid': !topicValid }"  :disabled='searching')
